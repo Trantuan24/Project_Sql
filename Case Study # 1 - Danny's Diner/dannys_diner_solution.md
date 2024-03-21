@@ -22,7 +22,7 @@ SELECT
     SUM(price) AS total_price
 FROM sales
 INNER JOIN menu
-	USING(product_id)
+    USING(product_id)
 GROUP BY 1;
 ```
 
@@ -94,7 +94,7 @@ SELECT
     COUNT(order_date) AS number_of_purchase
 FROM menu
 INNER JOIN sales
-	USING(product_id)
+    USING(product_id)
 GROUP BY 1
 ORDER BY number_of_purchase DESC
 LIMIT 1;
@@ -318,3 +318,4 @@ ORDER BY 1,2;
 ```
 
 #### Result set:
+![image](https://photos.app.goo.gl/Eg7GF1WYXG8o8MfE6)
