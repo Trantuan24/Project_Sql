@@ -326,24 +326,24 @@ ORDER BY 1,2;
 Danny also requires further information about the ranking of customer products, but he purposely does not need the ranking for non-member purchases so he expects null ranking values for the records when customers are not yet part of the loyalty program.
 ```sql
 WITH table_new AS (
-	SELECT 
-		customer_id,
-		order_date,
-		product_name,
-		price,
-		CASE WHEN join_date <= order_date THEN 'Y'
-		ELSE 'N' END AS member
-	FROM sales s
-	LEFT JOIN members ms  
-		USING(customer_id)  
-	INNER JOIN menu m
-		USING(product_id)
-	ORDER BY 1,2
+    SELECT 
+	customer_id,
+	order_date,
+	product_name,
+	price,
+	CASE WHEN join_date <= order_date THEN 'Y'
+	ELSE 'N' END AS member
+    FROM sales s
+    LEFT JOIN members ms  
+	USING(customer_id)  
+    INNER JOIN menu m
+	USING(product_id)
+    ORDER BY 1,2
 )
 SELECT *,
-	CASE WHEN member = 'N' then NULL
+    CASE WHEN member = 'N' then NULL
     ELSE DENSE_RANK() OVER (PARTITION BY customer_id, member
-							ORDER BY order_date)  END AS ranking
+			ORDER BY order_date)  END AS ranking
 FROM table_new;
 ```
 
