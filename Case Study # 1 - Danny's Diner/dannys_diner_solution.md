@@ -18,11 +18,91 @@
 
 ```sql
 SELECT 
-	customer_id,
+    customer_id,
     SUM(price) AS total_price
 FROM sales
 INNER JOIN menu
 	USING(product_id)
 GROUP BY 1;
 ```
+
+#### Result set:
+| customer_id | total_price |
+| ----------- | ----------- |
+| A           | $76         |
+| B           | $74         |
+| C           | $36         |
+
+***
+
+###  2. How many days has each customer visited the restaurant?
+
+```sql
+SELECT 
+    customer_id,
+    COUNT(DISTINCT order_date) AS total_days
+FROM sales
+GROUP BY 1;
+``` 
+	
+#### Result set:
+| customer_id | total_days  |
+| ----------- | ----------- |
+| A           | 4           |
+| B           | 6           |
+| C           | 2           |
+
+***
+
+###  3. What was the first item from the menu purchased by each customer?
+
+```sql
+WITH order_date_rank AS(
+    SELECT 
+        customer_id,
+        order_date,
+        product_name,
+        dense_rank() over(
+            partition by customer_id
+            order by order_date) AS ranks
+    FROM sales  s
+    INNER JOIN menu m
+        USING(product_id)
+)
+SELECT DISTINCT 
+    customer_id,
+    product_name
+FROM order_date_rank
+WHERE ranks = 1;
+```
+	
+#### Result set:
+| customer_id | product_name |
+| ----------- | ------------ |
+| A           | sushi        |
+| A           | curry        |
+| B           | curry        |
+| C           | ramen        |
+
+***
+
+###  4. What is the most purchased item on the menu and how many times was it purchased by all customers?
+
+```sql
+SELECT 
+    product_name,
+    COUNT(order_date) AS number_of_purchase
+FROM menu
+INNER JOIN sales
+	USING(product_id)
+GROUP BY 1
+ORDER BY number_of_purchase DESC
+LIMIT 1;
+```
+
+#### Result set:
+| product_name | number_of_purchase |
+| ------------ | ------------------ |
+| ramen        | 8                  |
+
 
