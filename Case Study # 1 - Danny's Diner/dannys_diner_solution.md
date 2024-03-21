@@ -29,9 +29,9 @@ GROUP BY 1;
 #### Result set:
 | customer_id | total_price |
 | ----------- | ----------- |
-| A           | $76         |
-| B           | $74         |
-| C           | $36         |
+| A           | 76          |
+| B           | 74          |
+| C           | 36          |
 
 ***
 
@@ -105,4 +105,77 @@ LIMIT 1;
 | ------------ | ------------------ |
 | ramen        | 8                  |
 
+***
 
+###  5. Which item was the most popular for each customer?
+
+```sql
+WITH most_popular AS(
+    SELECT 
+        customer_id, 
+        product_name,
+        COUNT(m.product_id) AS number_order,
+        dense_rank() over(
+            partition by customer_id
+            order by COUNT(m.product_id) DESC ) AS ranks
+    FROM menu m
+    INNER JOIN sales s
+        USING(product_id)
+    GROUP BY 1, 2
+)
+SELECT DISTINCT
+    customer_id, 
+    product_name,
+    number_order
+FROM most_popular
+WHERE ranks = 1;
+```
+
+#### Result set:
+| customer_id | product_name | number_order |
+| ----------- | ------------ | ------------ |
+| A           | ramen        | 3            |
+| B           | curry        | 2            |
+| B           | ramen        | 2            |
+| B           | sushi        | 2            |
+| C           | ramen        | 3            |
+
+***
+
+###  6. Which item was purchased first by the customer after they became a member?
+
+```sql
+WITH joined_member AS(
+    SELECT 
+        customer_id,
+        product_name,
+        join_date,
+        order_date,
+        dense_rank() over(
+			partition by customer_id
+            order by order_date
+        ) AS ranks
+    FROM sales s
+    INNER JOIN members ms  
+        USING(customer_id)  
+    INNER JOIN menu m
+        USING(product_id)
+    WHERE s.order_date >= ms.join_date
+)
+SELECT DISTINCT 
+    customer_id,
+    product_name,
+    order_date
+FROM joined_member
+WHERE ranks = 1;
+```
+
+#### Result set:
+| customer_id | product_name | order_date |
+| ----------- | ------------ | ---------- |
+| A           | curry        | 2021-01-07 |
+| B           | sushi        | 2021-01-11 |
+
+***
+
+###  7. Which item was purchased just before the customer became a member?
