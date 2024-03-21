@@ -318,4 +318,4 @@ ORDER BY 1,2;
 ```
 
 #### Result set:
-![image]
+![image](https://github.com/Trantuan24/Project_Sql/issues/1#issue-2200336155)
