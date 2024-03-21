@@ -152,7 +152,7 @@ WITH joined_member AS(
         join_date,
         order_date,
         dense_rank() over(
-			partition by customer_id
+	    partition by customer_id
             order by order_date
         ) AS ranks
     FROM sales s
@@ -179,3 +179,142 @@ WHERE ranks = 1;
 ***
 
 ###  7. Which item was purchased just before the customer became a member?
+
+```sql
+WITH last_purchase AS(
+    SELECT 
+        customer_id,
+        product_name,
+        join_date,
+        order_date,
+        dense_rank() over(
+            partition by customer_id
+            order by order_date
+        ) AS ranks
+    FROM sales s
+    INNER JOIN members ms  
+	USING(customer_id)  
+    INNER JOIN menu m
+	USING(product_id)
+    WHERE s.order_date < ms.join_date
+)
+SELECT DISTINCT 
+    customer_id,
+    product_name,
+    order_date,
+    join_date
+FROM last_purchase
+WHERE ranks = 1;
+```
+
+#### Result set:
+| customer_id | product_name | order_date   | join_date  |
+| ----------- | ------------ | ------------ | ---------- |
+| A           | sushi        | 2021-01-01   | 2021-01-07 |
+| A           | curry        | 2021-01-01   | 2021-01-07 |
+| B           | sushi        | 2021-01-01   | 2021-01-09 |
+
+***
+
+###  8. What is the total items and amount spent for each member before they became a member?
+
+```sql
+SELECT 
+    customer_id,
+    COUNT(product_name) AS total_product,
+    SUM(price) AS total_price
+FROM sales s
+INNER JOIN members ms  
+    USING(customer_id)  
+INNER JOIN menu m
+    USING(product_id)
+WHERE s.order_date < ms.join_date
+GROUP BY 1
+ORDER BY 1;
+```
+#### Result set:
+| customer_id | total_items | total_price |
+| ----------- | ----------- | ----------- |
+| A           | 2           | 25          |
+| B           | 3           | 40          |
+
+***
+
+###  9.  If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
+
+```sql
+SELECT 
+    customer_id,
+    SUM(CASE WHEN product_name = 'sushi' THEN price * 20
+    ELSE price *10 END) AS total_point
+FROM sales
+INNER JOIN menu
+    USING(product_id)
+GROUP BY 1;
+```
+
+#### Result set:
+| customer_id | total_point |
+| ----------- | ----------- |
+| A           | 860         |
+| B           | 940         |
+| C           | 360         |
+
+***
+
+###  10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January
+
+```sql
+WITH dates_cte AS(
+    SELECT 
+	customer_id,
+        join_date,
+        DATE_ADD(join_date, INTERVAL 6 DAY) last_date
+    FROM members
+)
+SELECT 
+    s.customer_id,
+    SUM(CASE WHEN product_name = 'sushi' THEN price * 20
+	WHEN order_date BETWEEN join_date AND last_date THEN price * 20
+        ELSE price * 10 END) AS total_point
+FROM sales s
+INNER JOIN dates_cte d
+    ON s.customer_id = d.customer_id
+INNER JOIN menu m
+    ON m.product_id = s.product_id
+WHERE order_date >= join_date AND order_date <= '2021-01-31'
+GROUP BY 1
+ORDER BY 1;
+```
+
+#### Result set:
+| customer_id | total_point |
+| ----------- | ----------- |
+| A           | 1020        |
+| B           | 320         |
+
+***
+
+###  Bonus Questions
+
+#### Join All The Things
+The following questions are related creating basic data tables that Danny and his team can use to quickly derive insights without needing to join the underlying tables using SQL. 
+Fill Member column as 'N' if the purchase was made before becoming a member and 'Y' if the after is amde after joining the membership.
+
+```sql
+SELECT 
+    customer_id,
+    order_date,
+    product_name,
+    price,
+    CASE WHEN join_date <= order_date THEN 'Y'
+    ELSE 'N' END AS member
+FROM sales s
+LEFT JOIN members ms  
+    USING(customer_id)  
+INNER JOIN menu m
+    USING(product_id)
+ORDER BY 1,2;
+```
+
+#### Result set:
