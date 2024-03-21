@@ -318,4 +318,4 @@ ORDER BY 1,2;
 ```
 
 #### Result set:
-![image](https://photos.app.goo.gl/Eg7GF1WYXG8o8MfE6)
+![image]
