@@ -318,4 +318,4 @@ ORDER BY 1,2;
 ```
 
 #### Result set:
-![image](https://github.com/Trantuan24/Project_Sql/issues/1#issue-2200336155)
+![image]([https://github.com/Trantuan24/Project_Sql/issues/1#issue-2200336155](https://user-images.githubusercontent.com/101379141/195248725-0fd80f0b-5e74-4442-b463-37f0c238ae1a.png)https://user-images.githubusercontent.com/101379141/195248725-0fd80f0b-5e74-4442-b463-37f0c238ae1a.png)
