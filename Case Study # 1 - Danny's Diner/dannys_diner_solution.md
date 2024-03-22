@@ -348,5 +348,4 @@ FROM table_new;
 ```
 
 #### Result set:
-
-
+![Screenshot 2024-03-22 183911](https://github.com/Trantuan24/Project_Sql/assets/145254268/0b377c63-2ee6-4dac-8675-f657c2fcaf61)
