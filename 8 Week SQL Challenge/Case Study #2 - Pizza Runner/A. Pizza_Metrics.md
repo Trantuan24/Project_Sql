@@ -2,6 +2,7 @@
 
 ![127271856-3c0d5b4a-baab-472c-9e24-3c1e3c3359b2](https://github.com/Trantuan24/Project_Sql/assets/145254268/0dcf4350-04fc-404a-ac10-8abcf894e0e2)
 
+- Case Study #2 Information: [Click Here!](https://8weeksqlchallenge.com/case-study-2/)
 
 ## Case Study Questions
 
