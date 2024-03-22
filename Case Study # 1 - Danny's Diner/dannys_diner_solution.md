@@ -1,4 +1,5 @@
 # Case Study #1: Danny's Diner
+![aaa](https://github.com/Trantuan24/Project_Sql/assets/145254268/28867d3c-27e4-4561-8a87-d2d5477e027e)
 
 ## Case Study Questions
 
