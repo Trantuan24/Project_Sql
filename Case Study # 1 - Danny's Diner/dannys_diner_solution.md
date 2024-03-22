@@ -347,5 +347,6 @@ SELECT *,
 FROM table_new;
 ```
 
-#### Result set:
+#### Result set:![Screenshot 2024-03-21 211104](https://github.com/Trantuan24/Project_Sql/assets/145254268/adfdbdec-0edb-4e0b-a1fb-f4189242831b)
+
 ![image]()
