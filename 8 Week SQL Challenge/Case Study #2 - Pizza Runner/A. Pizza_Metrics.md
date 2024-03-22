@@ -178,7 +178,7 @@ ORDER BY 1;
 
 ###  10. What was the volume of orders for each day of the week?
 
--DAYNAME() returns the name of the week day
+- DAYNAME() returns the name of the week day
 
 ```sql
 SELECT
